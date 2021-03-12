@@ -36,7 +36,7 @@ class AdminCreateAccount extends Component {
     }
 
     onSubmit = (event) => {
-        event.preventDefault()
+        //event.preventDefault()
 
         const registered = {
             fullName: this.state.fullName,
@@ -89,7 +89,7 @@ class AdminCreateAccount extends Component {
                                 <option selected>Select Role</option>
                                 <option value="Student">Student</option>
                                 <option value="Marketing Manager">Marketing Manager</option>
-                                <option value="Faculty’s Marketing Coordinator">Faculty’s Marketing Coordinator</option>
+                                <option value="Coordinator">Faculty’s Marketing Coordinator</option>
                                 <option value="Guest">Guest</option>
                                 <option value="Admin">Admin</option>
                             </select>

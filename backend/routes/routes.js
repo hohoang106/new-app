@@ -5,10 +5,29 @@ const signUpTemplateCopy = require('../models/signupModels')
 const submitTemplateCopy = require('../models/submitModels')
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv');
+const Joi = require('@hapi/joi')
 
 dotenv.config()
 
-router.post('/signup', (request, response) => {
+const schema = Joi.object({
+    fullName: Joi.string().required(),
+    username: Joi.string().required(),
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+    faculty: Joi.string(),
+    role: Joi.string(),
+    isChecked: Joi.boolean()
+})
+
+router.post('/signup', async (request, response) => {
+
+    const { error } = schema.validate(request.body)
+    if (error) return response.status(400).send(error.details[0].message);
+
+    const emailExist = await signUpTemplateCopy.findOne({ email: request.body.email })
+    if (emailExist) return response.status(400).send('Email already exists');
+
+
     const signedUpUser = new signUpTemplateCopy({
         fullName: request.body.fullName,
         username: request.body.username,
@@ -21,16 +40,45 @@ router.post('/signup', (request, response) => {
     signedUpUser.save().then(data => { response.json(data) }).catch(err => { response.json(err) })
 });
 
-router.post('/submitPicture', (request, response) => {
+router.post('/submit', (request, response) => {
     const picture = new submitTemplateCopy({
-        imageName: request.body.imageName,
-        imageData: request.body.imageData
+        title: request.body.title,
+        description: request.body.description,
+        imageFiles: request.body.imageFiles,
+        docsUrl: request.body.docsUrl,
+        docsName: request.body.docsName
     })
-    picture.save().then(data => { response.json(data) }).catch(err => { response.json(err) })
+    picture.save().then(data => {
+        response.json(data);
+        signUpTemplateCopy.updateOne(
+            { email: request.body.email },
+            { $push: { submitId: data._id } },
+            function (err, result) {
+                if (err) {
+                    response.send(err)
+                }
+            }
+        )
+    }).catch(err => { response.json(err) })
 })
+
+
 
 router.get('/getAccountToCheck', (request, response) => {
     signUpTemplateCopy.find({ isChecked: false })
+        .then(result => {
+            response.status(200).json({
+                account: result
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            response.status(500).json({ error: err })
+        });
+});
+//79
+router.post('/getAccountByFaculty', (request, response) => {
+    signUpTemplateCopy.find({ faculty: request.body.faculty })
         .then(result => {
             response.status(200).json({
                 account: result
@@ -69,6 +117,18 @@ router.get('/getAccountById/:id', (request, response) => {
         });
 });
 
+router.get('/getSubmitById/:id', (request, response) => {
+    const id = request.params.id;
+    submitTemplateCopy.find({ _id: id })
+        .then(result => {
+            response.status(200).json(result)
+        })
+        .catch(err => {
+            console.log(err);
+            response.status(500).json({ error: err })
+        })
+})
+
 router.patch('/checked/:id', async (request, response) => {
     try {
         const id = request.params.id;
@@ -76,6 +136,20 @@ router.patch('/checked/:id', async (request, response) => {
         const update = { isChecked: true }
         const options = { new: true }
         const result = await signUpTemplateCopy.findByIdAndUpdate(id, update, options);
+        response.send(result);
+        //console.log("Update value:", update)
+    } catch (error) {
+        console.log(error.message);
+    }
+})
+//77
+router.patch('/submitchecked/:id', async (request, response) => {
+    try {
+        const id = request.params.id;
+        //const update = request.body;
+        const update = { isChecked: true }
+        const options = { new: true }
+        const result = await submitTemplateCopy.findByIdAndUpdate(id, update, options);
         response.send(result);
         //console.log("Update value:", update)
     } catch (error) {

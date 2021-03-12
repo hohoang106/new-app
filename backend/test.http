@@ -4,8 +4,10 @@ Content-Type: application/json
 {
     "fullName" : "Hai",
     "username" : "haiqn",
-    "email" : "joe@gmail.com",
-    "password": "12345"
+    "email" : "joe3@gmail.com",
+    "password": "12345",
+    "role" : "Admin",
+    "faculty": "Maketing"
 }
 
 ####
@@ -52,3 +54,25 @@ Content-Type: application/json
     "password": "123456789",
     "role": ""
 }
+####
+
+POST http://localhost:4000/app/submitPicture
+Content-Type: application/json
+
+{
+    "imageName": "Pic1",
+    "imageData": "Pic data"
+}
+
+###
+
+POST  http://localhost:4000/app/getAccountByFaculty
+Content-Type: application/json
+
+{
+    "faculty": "It"
+}
+
+###
+
+PATCH  http://localhost:4000/app/submitchecked/6041a4779ae48464ccd53852

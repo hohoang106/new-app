@@ -32,6 +32,10 @@ const signUpTemplate = new mongoose.Schema({
     role: {
         type: String,
         default: "Student"
+    },
+    submitId: {
+        type: Array,
+        default: []
     }
 });
 

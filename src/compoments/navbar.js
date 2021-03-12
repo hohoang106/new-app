@@ -4,7 +4,6 @@ import "bootstrap/dist/css/bootstrap.min.css"
 
 
 function NavBar(props) {
-    console.log("email: ", props.email)
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
             <Link className="navbar-brand" to="/">
@@ -33,6 +32,23 @@ function NavBar(props) {
                             </NavLink>
                             <NavLink className="nav-item nav-link" to="/AddminCreateAccount">
                                 Create new account
+                            </NavLink>
+                        </React.Fragment>
+                    )}
+                    {(props.role === "Student") && (
+                        <React.Fragment>
+                            <NavLink className="nav-item nav-link" to="/submitForm">
+                                Submit news
+                            </NavLink>
+                            <NavLink className="nav-item nav-link" to="/mySubmit">
+                                My submit
+                            </NavLink>
+                        </React.Fragment>
+                    )}
+                    {(props.role === "Coordinator") && (
+                        <React.Fragment>
+                            <NavLink className="nav-item nav-link" to="/notification">
+                                Notification
                             </NavLink>
                         </React.Fragment>
                     )}
