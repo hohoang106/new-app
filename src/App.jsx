@@ -17,33 +17,38 @@ import MySubmit from './compoments/mySubmit';
 import SubmitListFaculty from './compoments/submitListFaculty';
 import Notification from './compoments/notification';
 import SubmitDetail from './compoments/submitDetail'
+import ManageDeadline from './compoments/manageDeadline';
 
 class App extends Component {
     state = {
         email: '',
         role: '',
         id: '',
-        faculty: ''
+        faculty: '',
+        dateStart:'',
+        dateEnd:''
     }
 
     componentDidMount() {
         try {
             const jwt = localStorage.getItem("token");
             const user = jwtDecode(jwt).user;
+            console.log(jwtDecode(jwt))
             this.setState({ email: user.email });
             this.setState({ role: user.role });
             this.setState({ id: user._id })
             this.setState({ faculty: user.faculty })
+            this.setState({ dateStart: user.dateStart })
+            this.setState({ dateEnd: user.dateEnd })
         } catch (error) {
             console.log("token empty");
         }
     }
 
     render() {
-        console.log("State: ", this.state)
         return (
             <div>
-                <NavBar email={this.state.email} role={this.state.role} />
+                <NavBar email={this.state.email} role={this.state.role} dateStart={this.state.dateStart} dateEnd={this.state.dateEnd}/>
                 <div className="container">
                     <Switch>
                         <Route path="/signup" component={Register} />
@@ -56,13 +61,14 @@ class App extends Component {
                                 <Route path="/AdminCheck" component={AdminCheckAccount} />
                                 <Route path="/AddminCreateAccount" component={AdminCreateAccount} />
                                 <Route path="/AccountList" exact component={AccountList} />
+                                <Route path="/DeadLine" component={ManageDeadline} />
                                 <Route path="/AccountList/:id" component={AccountDetail} />
                             </React.Fragment>
                         )}
                         {(this.state.role === "Student") && (
                             <React.Fragment>
                                 <Route path='/submitForm'>
-                                    <SubmitForm email={this.state.email} />
+                                    <SubmitForm email={this.state.email} dateEnd={this.state.dateEnd} dateStart ={this.state.dateStart}/>
                                 </Route>
                                 <Route path='/mySubmit'>
                                     <MySubmit id={this.state.id} />

@@ -36,6 +36,12 @@ const signUpTemplate = new mongoose.Schema({
     submitId: {
         type: Array,
         default: []
+    },
+    dateStartDeadline: {
+        type: Date,
+    },
+    dateEndDeadline: {
+        type: Date,
     }
 });
 

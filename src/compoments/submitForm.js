@@ -33,6 +33,11 @@ class SubmitForm extends Component {
         this.setState({ agree: !this.state.agree })
     }
     onSubmit = event => {
+        const {dateStart,dateEnd} = this.props;
+        if (dateStart || dateEnd) {
+            alert('Bạn không được submit vì hết thời gian nộp');
+            return;
+        }
         //event.preventDefault()
         const submit = {
             title: this.state.title,
@@ -42,7 +47,7 @@ class SubmitForm extends Component {
             docsName: this.state.docsFile.filesUploaded[0].filename,
             docsUrl: 'https://process.filestackapi.com/zip/' + this.state.docsFile.filesUploaded[0].handle
         }
-        console.log("Submit: ", submit)
+        
         axios.post('http://localhost:4000/app/submit', submit).then(response => console.log(response.data));
         this.props.history.push('/mySubmit')
     }

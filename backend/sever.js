@@ -15,7 +15,8 @@ app.use(bodyParser.urlencoded({
     limit: '50mb',
     extended: false,
 }));
+const PORT = 4000
 app.use(express.json())
 app.use(cors())
 app.use('/app', routesUrls)
-app.listen(4000, () => console.log("server is up and running"))
+app.listen(PORT, () => console.log(`server is up and running on port: ${PORT}`))
